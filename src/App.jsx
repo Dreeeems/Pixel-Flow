@@ -21,7 +21,7 @@ function App() {
           onColorChange={handleColorChange}
           onWidthChange={handleWidthChange}
         />
-        <Canvas color={color} pixelSize={4} />
+        <Canvas color={color} pixelSize={16} />
       </div>
     </>
   );
