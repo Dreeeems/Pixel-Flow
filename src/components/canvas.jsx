@@ -17,9 +17,7 @@ const Canvas = ({ color }) => {
     };
 
     window.addEventListener("resize", handleResize);
-
     handleResize();
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -32,7 +30,6 @@ const Canvas = ({ color }) => {
     const y = Math.floor(pointer.y / pixelSize) * pixelSize;
 
     setIsDrawing(true);
-
     setDrawnPixels((prevPixels) => [...prevPixels, { x, y, color }]);
   };
 
@@ -51,6 +48,15 @@ const Canvas = ({ color }) => {
     setIsDrawing(false);
   };
 
+  const downloadCanvas = () => {
+    const stage = document.querySelector("canvas");
+    const dataUrl = stage.toDataURL();
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = "canvas-image.png";
+    link.click();
+  };
+
   return (
     <div
       style={{
@@ -59,6 +65,7 @@ const Canvas = ({ color }) => {
         padding: "10px",
         backgroundColor: "#f4f4f4",
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        borderRadius: "8px",
       }}
     >
       <Stage
@@ -71,6 +78,7 @@ const Canvas = ({ color }) => {
         style={{
           border: "2px solid #000",
           backgroundColor: "#fff",
+          borderRadius: "8px",
         }}
       >
         <Layer>
@@ -88,6 +96,20 @@ const Canvas = ({ color }) => {
           ))}
         </Layer>
       </Stage>
+      <button
+        onClick={downloadCanvas}
+        style={{
+          marginTop: "10px",
+          padding: "10px 20px",
+          backgroundColor: "#4CAF50",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Download Canvas
+      </button>
     </div>
   );
 };
