@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Stage, Layer, Rect } from "react-konva";
 
 const Canvas = ({ color }) => {
@@ -7,6 +7,8 @@ const Canvas = ({ color }) => {
   const [pixelSize, setPixelSize] = useState(0);
   const [stageWidth, setStageWidth] = useState(window.innerWidth * 0.8);
   const [stageHeight, setStageHeight] = useState(window.innerHeight * 0.8);
+
+  const layerRef = useRef();
 
   useEffect(() => {
     const handleResize = () => {
@@ -18,6 +20,7 @@ const Canvas = ({ color }) => {
 
     window.addEventListener("resize", handleResize);
     handleResize();
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -57,17 +60,14 @@ const Canvas = ({ color }) => {
     link.click();
   };
 
+  const clearCanvas = () => {
+    layerRef.current.clear();
+    layerRef.current.batchDraw();
+    setDrawnPixels([]);
+  };
+
   return (
-    <div
-      style={{
-        position: "relative",
-        display: "inline-block",
-        padding: "10px",
-        backgroundColor: "#f4f4f4",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-        borderRadius: "8px",
-      }}
-    >
+    <div className="relative inline-block p-4 bg-gray-100 shadow-lg rounded-lg">
       <Stage
         width={stageWidth}
         height={stageHeight}
@@ -75,13 +75,9 @@ const Canvas = ({ color }) => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseOut={handleMouseUp}
-        style={{
-          border: "2px solid #000",
-          backgroundColor: "#fff",
-          borderRadius: "8px",
-        }}
+        className="border-2 border-black bg-white rounded-lg"
       >
-        <Layer>
+        <Layer ref={layerRef}>
           {drawnPixels.map((pixel, index) => (
             <Rect
               key={index}
@@ -96,20 +92,21 @@ const Canvas = ({ color }) => {
           ))}
         </Layer>
       </Stage>
-      <button
-        onClick={downloadCanvas}
-        style={{
-          marginTop: "10px",
-          padding: "10px 20px",
-          backgroundColor: "#4CAF50",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        Download Canvas
-      </button>
+
+      <div className="mt-4 space-x-2">
+        <button
+          onClick={downloadCanvas}
+          className="px-6 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+        >
+          Télécharger le Canvas
+        </button>
+        <button
+          onClick={clearCanvas}
+          className="px-6 py-2 bg-red-500 text-white rounded-md shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
+        >
+          Effacer le Canvas
+        </button>
+      </div>
     </div>
   );
 };
